@@ -1,9 +1,18 @@
+= LinkedIn Network Analysis =
 
+Copied from https://towardsdatascience.com/visualizing-my-linkedin-network-c4b232ab2ad0
+
+Preview:
 // insert an image
-![Linkedin Network map](network-map-preview.png)
+image::network-map-preview.png[]
 
 
-== Jupyter Labs ==
+== Data
+Pull your personal data from LinkedIn, at https://www.linkedin.com/mypreferences/d/download-my-data
+
+
+== Setup with Jupyter Labs ==
+```shell
 brew install jupyterlab
 
 // pip install jupyter-dash
@@ -19,4 +28,5 @@ jupyter lab build
 
 // open the lab UI
 jupyter lab
+```
 
