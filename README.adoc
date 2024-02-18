@@ -1,4 +1,7 @@
 
+// insert an image
+![Linkedin Network map](network-map-preview.png)
+
 
 == Jupyter Labs ==
 brew install jupyterlab
@@ -14,6 +17,6 @@ jupyter lab build
 // jupyter labextension install jupyterlab-plotly
 
 
+// open the lab UI
 jupyter lab
-// worked
 
