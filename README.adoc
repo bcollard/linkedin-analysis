@@ -1,0 +1,241 @@
+
+
+== Jupyter Notebook ==
+pip3 install notebook
+// downloaded the internet...
+
+python3.11 -m pip install --upgrade pip
+
+jupyter notebook
+
+// didn't work, rollback
+pip3 remove notebook
+
+---
+
+pip3 remove notebook
+
+brew install jupyterlab
+
+// pip install jupyter-dash
+// pip install jupyterlab-plotly
+// pip install plotly jupyterlab
+
+jupyter lab build
+// jupyter labextension install plotlywidget
+// jupyter labextension install jupyter-matplotlib
+// jupyter labextension install jupyterlab-dash
+// jupyter labextension install jupyterlab-plotly
+
+
+jupyter lab
+// worked
+
+
+== Parsing LinkedIn Connections
+// playbook
+```python
+import pandas as pd
+import plotly.express as px
+import numpy as np
+import plotly.io as pio
+pio.renderers.default = 'iframe'
+# https://www.ibm.com/support/pages/plotly-produced-blank-graph-jupyter-lab-ide
+```
+
+// download the connections from LinkedIn
+// delete the first two lines
+
+```python
+df = pd.read_csv('Connections.csv')
+df = df.dropna(subset=['Company', 'Position'])
+```
+
+```python
+# create root node for treemap
+df['My Network'] = 'My Network'
+# group company synonyms
+df.loc[df['Company'].str.lower() == 'Leroy Merlin'.lower(), 'Company'] = 'ADEO'
+df.loc[df['Company'].str.lower() == 'ADEO Services'.lower(), 'Company'] = 'ADEO'
+
+df.loc[df['Company'].str.lower() == 'Indépendant'.lower(), 'Company'] = 'Freelance'
+df.loc[df['Company'].str.lower() == 'Auchan Retail France'.lower(), 'Company'] = 'Freelance'
+
+
+# EXECS
+df.loc[df['Position'].str.lower() == 'Founder'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Founder & CEO'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'CEO'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Chief Executive Officer'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Co-founder & CEO'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Président'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Gérant'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Fondateur'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Directeur général adjoint'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Co-Founder'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Co-Founder & CEO'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Co-fondateur'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Dirigent d''entreprise'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Dirigeant d''entreprise'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Direction Associé'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Directeur associé'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'PDG'.lower(), 'Position'] = 'Founder / CEO'
+df.loc[df['Position'].str.lower() == 'Fondatrice'.lower(), 'Position'] = 'Founder / CEO'
+
+df.loc[df['Position'].str.lower() == 'Chief Technology Officer'.lower(), 'Position'] = 'CTO'
+df.loc[df['Position'].str.lower() == 'Directeur Technique'.lower(), 'Position'] = 'CTO'
+df.loc[df['Position'].str.lower() == 'Directeur technique'.lower(), 'Position'] = 'CTO'
+
+df.loc[df['Position'].str.lower() == 'Chief Information Security Officer'.lower(), 'Position'] = 'CISO'
+df.loc[df['Position'].str.lower() == 'RSSI'.lower(), 'Position'] = 'CISO'
+df.loc[df['Position'].str.lower() == 'RSSI / CISO'.lower(), 'Position'] = 'CISO'
+df.loc[df['Position'].str.lower() == 'Responsable Sécurité SI'.lower(), 'Position'] = 'CISO'
+df.loc[df['Position'].str.lower() == 'Responsable Sécurité des Sytèmes d''Information'.lower(), 'Position'] = 'CISO'
+
+
+
+# SALES
+df.loc[df['Position'].str.lower() == 'Enterprise Account Executive'.lower(), 'Position'] = 'Account Executive'
+df.loc[df['Position'].str.lower() == 'Enterprise Account Manager'.lower(), 'Position'] = 'Account Executive'
+df.loc[df['Position'].str.lower() == 'Strategic Account Executive'.lower(), 'Position'] = 'Account Executive'
+df.loc[df['Position'].str.lower() == 'Sales Representative'.lower(), 'Position'] = 'Account Executive'
+df.loc[df['Position'].str.lower() == 'Ingénieur Commercial'.lower(), 'Position'] = 'Account Executive'
+df.loc[df['Position'].str.lower() == 'Ingénieur d''Affaires'.lower(), 'Position'] = 'Account Executive'
+
+df.loc[df['Position'].str.lower() == 'Senior Solutions Engineer'.lower(), 'Position'] = 'Solutions Engineer (sales)'
+df.loc[df['Position'].str.lower() == 'Sales Engineer'.lower(), 'Position'] = 'Solutions Engineer (sales)'
+df.loc[df['Position'].str.lower() == 'Senior Sales Engineer'.lower(), 'Position'] = 'Solutions Engineer (sales)'
+df.loc[df['Position'].str.lower() == 'Solutions Engineer'.lower(), 'Position'] = 'Solutions Engineer (sales)'
+df.loc[df['Position'].str.lower() == 'Principal Solutions Engineer'.lower(), 'Position'] = 'Solutions Engineer (sales)'
+df.loc[df['Position'].str.lower() == 'Staff Solutions Engineer'.lower(), 'Position'] = 'Solutions Engineer (sales)'
+df.loc[df['Position'].str.lower() == 'VP of Solutions Engineer'.lower(), 'Position'] = 'Solutions Engineer (sales)'
+
+
+
+# BDR/SDR
+df.loc[df['Position'].str.lower() == 'BDR'.lower(), 'Position'] = 'BDR / SDR'
+df.loc[df['Position'].str.lower() == 'SDR'.lower(), 'Position'] = 'BDR / SDR'
+df.loc[df['Position'].str.lower() == 'Business Development Representative'.lower(), 'Position'] = 'BDR / SDR'
+df.loc[df['Position'].str.lower() == 'Senior Business Development Representative'.lower(), 'Position'] = 'BDR / SDR'
+df.loc[df['Position'].str.lower() == 'Business Development Manager'.lower(), 'Position'] = 'BDR / SDR'
+df.loc[df['Position'].str.lower() == 'Business Manager'.lower(), 'Position'] = 'BDR / SDR'
+df.loc[df['Position'].str.lower() == 'Business Developer'.lower(), 'Position'] = 'BDR / SDR'
+df.loc[df['Position'].str.lower() == 'Strategic Sales Representative'.lower(), 'Position'] = 'BDR / SDR'
+
+
+
+# ENGINEERING
+df.loc[df['Position'].str.lower() == 'Senior Software Engineer'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Lead Developer'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Developer'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Développeur'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Lead Développeur'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Principal Engineer'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Principal Software Engineer'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Senior Developer'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Senior Software Developer'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Software Developer'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Lead Software Engineer'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Ingénieur Logiciels'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Ingénieur logiciels'.lower(), 'Position'] = 'Software Engineer'
+df.loc[df['Position'].str.lower() == 'Ingénieur logiciel'.lower(), 'Position'] = 'Software Engineer'
+
+df.loc[df['Position'].str.lower() == 'Lead Software Architect'.lower(), 'Position'] = 'Software Architect'
+df.loc[df['Position'].str.lower() == 'Lead Architect'.lower(), 'Position'] = 'Software Architect'
+df.loc[df['Position'].str.lower() == 'Technical Lead'.lower(), 'Position'] = 'Software Architect'
+df.loc[df['Position'].str.lower() == 'Technical Leader'.lower(), 'Position'] = 'Software Architect'
+
+df.loc[df['Position'].str.lower() == 'Senior Engineering Manager'.lower(), 'Position'] = 'Engineering Manager'
+df.loc[df['Position'].str.lower() == 'Staff Engineering Manager'.lower(), 'Position'] = 'Engineering Manager'
+df.loc[df['Position'].str.lower() == 'Head of Engineering'.lower(), 'Position'] = 'Engineering Manager'
+df.loc[df['Position'].str.lower() == 'VP of Engineering'.lower(), 'Position'] = 'Engineering Manager'
+df.loc[df['Position'].str.lower() == 'Senior Staff Engineer'.lower(), 'Position'] = 'Engineering Manager'
+df.loc[df['Position'].str.lower() == 'Senior Member of Technical Staff'.lower(), 'Position'] = 'Engineering Manager'
+
+
+
+# SRE/CLOUD
+df.loc[df['Position'].str.lower() == 'Ingénieur DevOps'.lower(), 'Position'] = 'DevOps / SRE'
+df.loc[df['Position'].str.lower() == 'Site Reliability Engineer'.lower(), 'Position'] = 'DevOps / SRE'
+df.loc[df['Position'].str.lower() == 'Senior Site Reliability Engineer'.lower(), 'Position'] = 'DevOps / SRE'
+df.loc[df['Position'].str.lower() == 'DevOps Engineer'.lower(), 'Position'] = 'DevOps / SRE'
+df.loc[df['Position'].str.lower() == 'Devops Engineer'.lower(), 'Position'] = 'DevOps / SRE'
+df.loc[df['Position'].str.lower() == 'Platform Engineer'.lower(), 'Position'] = 'DevOps / SRE'
+df.loc[df['Position'].str.lower() == 'Devops engineer'.lower(), 'Position'] = 'DevOps / SRE'
+df.loc[df['Position'].str.lower() == 'Cloud Engineer'.lower(), 'Position'] = 'DevOps / SRE'
+df.loc[df['Position'].str.lower() == 'Cloud Infrastructure Engineer'.lower(), 'Position'] = 'DevOps / SRE'
+df.loc[df['Position'].str.lower() == 'DevOps Architect'.lower(), 'Position'] = 'DevOps / SRE'
+df.loc[df['Position'].str.lower() == 'Senior SRE'.lower(), 'Position'] = 'DevOps / SRE'
+
+df.loc[df['Position'].str.lower() == 'Senior Cloud Architect'.lower(), 'Position'] = 'Cloud Architect'
+df.loc[df['Position'].str.lower() == 'Technical Architect'.lower(), 'Position'] = 'Cloud Architect'
+df.loc[df['Position'].str.lower() == 'Lead Technical Architect'.lower(), 'Position'] = 'Cloud Architect'
+df.loc[df['Position'].str.lower() == 'Platform Architect'.lower(), 'Position'] = 'Cloud Architect'
+df.loc[df['Position'].str.lower() == 'Architecte SI'.lower(), 'Position'] = 'Cloud Architect'
+df.loc[df['Position'].str.lower() == 'Architecte Cloud'.lower(), 'Position'] = 'Cloud Architect'
+df.loc[df['Position'].str.lower() == 'IT Architect'.lower(), 'Position'] = 'Cloud Architect'
+df.loc[df['Position'].str.lower() == 'Architecte technique'.lower(), 'Position'] = 'Cloud Architect'
+df.loc[df['Position'].str.lower() == 'Cloud Security Architect'.lower(), 'Position'] = 'Cloud Architect'
+
+
+
+# CUSTOMER SUCCESS
+df.loc[df['Position'].str.lower() == 'Senior Technical Account Manager'.lower(), 'Position'] = 'Solutions Architect'
+df.loc[df['Position'].str.lower() == 'Senior Customer Experience Architect'.lower(), 'Position'] = 'Solutions Architect'
+df.loc[df['Position'].str.lower() == 'Senior Customer Experience Engineer'.lower(), 'Position'] = 'Solutions Architect'
+df.loc[df['Position'].str.lower() == 'Senior Solutions Architect'.lower(), 'Position'] = 'Solutions Architect'
+df.loc[df['Position'].str.lower() == 'Senior Solution Architect'.lower(), 'Position'] = 'Solutions Architect'
+df.loc[df['Position'].str.lower() == 'Solution Architect'.lower(), 'Position'] = 'Solutions Architect'
+df.loc[df['Position'].str.lower() == 'Architecte solutions'.lower(), 'Position'] = 'Solutions Architect'
+df.loc[df['Position'].str.lower() == 'Customer Solutions Architect'.lower(), 'Position'] = 'Solutions Architect'
+df.loc[df['Position'].str.lower() == 'Lead Solutions Architect'.lower(), 'Position'] = 'Solutions Architect'
+
+df.loc[df['Position'].str.lower() == 'Senior Customer Success Manager'.lower(), 'Position'] = 'Account Manager'
+df.loc[df['Position'].str.lower() == 'Customer Success Manager'.lower(), 'Position'] = 'Account Manager'
+df.loc[df['Position'].str.lower() == 'Key Account Manager'.lower(), 'Position'] = 'Account Manager'
+
+df.loc[df['Position'].str.lower() == 'Senior Field Engineer'.lower(), 'Position'] = 'Field Engineer'
+df.loc[df['Position'].str.lower() == 'Senior Customer Success Engineer'.lower(), 'Position'] = 'Field Engineer'
+df.loc[df['Position'].str.lower() == 'Customer Success Engineer'.lower(), 'Position'] = 'Field Engineer'
+
+
+
+# HR
+df.loc[df['Position'].str.lower() == 'Hiring Manager'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Responsable recrutement'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Chargée de recrutement'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Chargée de Recrutement'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Senior Recruitment Consultant'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Talent Acquisition Manager'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Consultant en Recrutement'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Consultante en Recrutement'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Recruitment Manager'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Senior Talent Acquisition'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Senior Talent Acquisition Specialist'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Talent Acquisition Specialist'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Talent Acquisition Partner'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Talent acquisition manager'.lower(), 'Position'] = 'Talent Acquisition'
+df.loc[df['Position'].str.lower() == 'Technical Recruiter'.lower(), 'Position'] = 'Talent Acquisition'
+
+
+df.loc[df['Position'].str.lower() == 'Responsable RH'.lower(), 'Position'] = 'HR Manager'
+df.loc[df['Position'].str.lower() == 'Responsable Ressources Humaines'.lower(), 'Position'] = 'HR Manager'
+df.loc[df['Position'].str.lower() == 'Directice des Ressources Humaines'.lower(), 'Position'] = 'HR Manager'
+df.loc[df['Position'].str.lower() == 'Directice des ressources humaines'.lower(), 'Position'] = 'HR Manager'
+
+
+
+# PRODUCT
+df.loc[df['Position'].str.lower() == 'Product Owner'.lower(), 'Position'] = 'Product Manager'
+
+
+
+# API
+df.loc[df['Position'].str.lower() == 'API Management Architect'.lower(), 'Position'] = 'API Architect'
+```
+
+
+```python
+fig = px.treemap(df, path=['My Network', 'Position', 'Company'], width=1300, height=1300)
+fig.show()
+```
