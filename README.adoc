@@ -4,6 +4,7 @@ Copied from https://towardsdatascience.com/visualizing-my-linkedin-network-c4b23
 
 Preview:
 // insert an image
+
 image::network-map-preview.png[]
 
 
